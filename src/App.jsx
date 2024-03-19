@@ -21,7 +21,7 @@ function App() {
         possition.coords.longitude
       );
       setAvailablePlaces(sortplaces);
-      console.log('run');
+      console.log("run");
     });
   };
 
@@ -42,6 +42,10 @@ function App() {
       const place = AVAILABLE_PLACES.find((place) => place.id === id);
       return [place, ...prevPickedPlaces];
     });
+    const sortIds = JSON.parse(localStorage.getItem("SelectedPlaceId")) || [];
+    if (sortIds.indexOf(id) === -1) {
+      localStorage.setItem("SelectedPlaceId", JSON.stringify([...sortIds, id]));
+    }
   }
 
   function handleRemovePlace() {
@@ -49,10 +53,16 @@ function App() {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     modal.current.close();
+    const sortIds = JSON.parse(localStorage.getItem("SelectedPlaceId")) || [];
+    localStorage.setItem(
+      "SelectedPlaceId",
+      JSON.stringify(sortIds.filter((id) => id !== selectedPlace.current))
+    );
   }
+
   useEffect(() => {
-    sortPlace();  
-  },[]);
+    sortPlace();
+  }, []);
   return (
     <>
       <Modal ref={modal}>
